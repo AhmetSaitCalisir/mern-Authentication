@@ -7,12 +7,14 @@ const errorHandler = require("./middleware/error");
 connectDB();
 
 const auth = require("./routes/auth");
+const private = require("./routes/private");
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/api/auth", auth);
+app.use("/api/private", private);
 
 // Error Handler
 app.use(errorHandler);
