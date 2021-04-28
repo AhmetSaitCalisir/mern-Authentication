@@ -4,7 +4,7 @@ Single page authentication using JWT with Mongodb, Express.js, React.js and Node
 
 ## Dependencies
 
-# Server
+### Server
 
 - bcryptjs
 - cors
@@ -14,7 +14,7 @@ Single page authentication using JWT with Mongodb, Express.js, React.js and Node
 - mongoose
 - nodemon
 
-# Client
+### Client
 
 - axios
 - bootstrap
