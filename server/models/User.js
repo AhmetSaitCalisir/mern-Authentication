@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -5,22 +6,22 @@ const jwt = require("jsonwebtoken");
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, "Please provide a username"],
+    required: [true, "Please provide username"],
   },
   email: {
     type: String,
-    required: [true, "Please provide a email"],
+    required: [true, "Please provide email address"],
     unique: true,
     match: [
-      /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
-      "Please provice a valid email",
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      "Please provide a valid email",
     ],
   },
   password: {
     type: String,
     required: [true, "Please add a password"],
     minlength: 6,
-    select: false, // We'r not returning this
+    select: false,
   },
 });
 
@@ -34,11 +35,11 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.methods.matchPasswords = async function (password) {
+UserSchema.methods.matchPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-UserSchema.methods.getSignedToken = function () {
+UserSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { axios } from "axios";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const RegisterPage = ({ history }) => {
@@ -9,12 +9,18 @@ const RegisterPage = ({ history }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (localStorage.getItem("authToken")) {
+      history.push("/");
+    }
+  }, [history]);
+
   const registerHandler = async (e) => {
     e.preventDefault();
 
     const config = {
       header: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
       },
     };
 
@@ -29,12 +35,17 @@ const RegisterPage = ({ history }) => {
 
     try {
       const { data } = await axios.post(
-        "/api/auth/register",
-        { username, email, password },
+        "http://localhost:4545/api/auth/register",
+        {
+          username,
+          email,
+          password,
+        },
         config
       );
 
       localStorage.setItem("authToken", data.token);
+
       history.push("/");
     } catch (error) {
       setError(error.response.data.error);
@@ -65,23 +76,19 @@ const RegisterPage = ({ history }) => {
                 id="txt_userName"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-              >
-                {" "}
-              </input>
+              ></input>
             </div>
             <div className="form-group">
               <label htmlFor="txt_email">Email address</label>
               <input
                 type="email"
-                classNanme="form-control"
+                className="form-control"
                 required
                 id="txt_email"
                 aria-describedby="emailHelp"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-              >
-                {" "}
-              </input>
+              ></input>
               <small id="emailHelp" className="form-text text-muted">
                 We'll never share your email with anyone else.
               </small>
@@ -109,13 +116,10 @@ const RegisterPage = ({ history }) => {
               ></input>
             </div>
             <button type="submit" className="btn btn-primary">
-              Submit
+              Register
             </button>
-            <small id="goLogin" class="form-text text-muted">
-              Already have account?{" "}
-              <Link to="/login" className="btn btn-link">
-                Login
-              </Link>
+            <small id="goLogin" className="form-text text-muted">
+              Already have account? <Link to="/login">Login</Link>
             </small>
           </form>
         </div>
